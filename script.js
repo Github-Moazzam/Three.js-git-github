@@ -65,29 +65,15 @@ const canvas = document.querySelector("canvas.webgl");
 // Scene
 const scene = new THREE.Scene();
 
-const group = new THREE.Group();
-scene.add(group);
+
 
 // Create Cubes
 const box1 = new THREE.Mesh(
   new THREE.BoxGeometry(1, 1, 1),
   new THREE.MeshBasicMaterial({ color: "red" })
 );
-group.add(box1);
-box1.position.x = 1.2;
+scene.add(box1);
 
-const box2 = new THREE.Mesh(
-  new THREE.BoxGeometry(1, 1, 1),
-  new THREE.MeshBasicMaterial({ color: "green" })
-);
-box2.position.x = -1.2;
-group.add(box2);
-
-const box3 = new THREE.Mesh(
-  new THREE.BoxGeometry(1, 1, 1),
-  new THREE.MeshBasicMaterial({ color: "yellow" })
-);
-group.add(box3);
 
 // Sizes
 const sizes = {
@@ -114,56 +100,33 @@ renderer.setSize(sizes.width, sizes.height);
 // Clock
 const clock = new THREE.Clock();
 
-// Raycaster and mouse for cube interaction
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
 
-// Get the info div
-const infoDiv = document.getElementById("infoDiv");
+window.addEventListener('resize', () => {
+
+  console.log('resized')
+camera.aspect = window.innerWidth/window.innerHeight;
+camera.updateProjectionMatrix();
+renderer.setSize(window.innerWidth,window.innerHeight);
+
+})
+
+
+
 
 const tick = () => {
-//   const elapsedTime = clock.getElapsedTime();
-//   box1.position.y = Math.sin(2 * elapsedTime);
+
   camera.lookAt(box1.position);
 
   renderer.render(scene, camera);
   window.requestAnimationFrame(tick);
 };
 
-// Handle mouse click
-const onClick = (event) => {
-  // Calculate mouse position in normalized device coordinates (-1 to +1)
-  mouse.x = (event.clientX / sizes.width) * 2 - 1;
-  mouse.y = -(event.clientY / sizes.height) * 2 + 1;
 
-  // Update raycaster
-  raycaster.setFromCamera(mouse, camera);
 
-  // Find intersected objects
-  const intersects = raycaster.intersectObjects(group.children);
 
-  if (intersects.length > 0) {
-    const intersectedObject = intersects[0].object;
-    const { width, height, depth } = intersectedObject.geometry.parameters;
-    const color = intersectedObject.material.color.getStyle();
 
-    // Display cube properties
-    infoDiv.innerHTML = `
-      <strong>Cube Properties:</strong><br>
-      Width: ${width}<br>
-      Height: ${height}<br>
-      Depth: ${depth}<br>
-      Color: ${color}
-    `;
-    infoDiv.style.display = "block";
-    infoDiv.style.left = `${event.clientX}px`;
-    infoDiv.style.top = `${event.clientY}px`;
-  } else {
-    infoDiv.style.display = "none";
-  }
-};
 
-// Add event listener for click
-window.addEventListener("click", onClick);
+
+
 
 tick();
