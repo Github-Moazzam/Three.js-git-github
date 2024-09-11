@@ -69,8 +69,8 @@ const scene = new THREE.Scene();
 
 // Create Cubes
 const box1 = new THREE.Mesh(
-  new THREE.BoxGeometry(1, 1, 1),
-  new THREE.MeshBasicMaterial({ color: "red" })
+  new THREE.SphereGeometry(1.2, 20, 20),
+  new THREE.MeshBasicMaterial({ color: "red", wireframe:true })
 );
 scene.add(box1);
 
@@ -83,7 +83,7 @@ const sizes = {
 
 // Camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height);
-camera.position.z = 3;
+camera.position.z = 2;
 scene.add(camera);
 
 // Renderer
@@ -99,11 +99,12 @@ renderer.setSize(sizes.width, sizes.height);
 
 // Clock
 const clock = new THREE.Clock();
+let previousTime =0;
 
 
 window.addEventListener('resize', () => {
 
-  console.log('resized')
+  // console.log('resized')
 camera.aspect = window.innerWidth/window.innerHeight;
 camera.updateProjectionMatrix();
 renderer.setSize(window.innerWidth,window.innerHeight);
@@ -114,6 +115,17 @@ renderer.setSize(window.innerWidth,window.innerHeight);
 
 
 const tick = () => {
+
+  
+  
+  const currentTime = clock.getElapsedTime();
+  const delta = currentTime-previousTime;
+  previousTime=currentTime;
+  
+  
+  box1.rotation.y += THREE.MathUtils.degToRad(0.1) * delta *50
+  box1.rotation.z += THREE.MathUtils.degToRad(0.1) * delta*50
+
 
   camera.lookAt(box1.position);
 
